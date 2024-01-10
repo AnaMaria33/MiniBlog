@@ -1,3 +1,5 @@
+import { db } from "../firebase/config";
+
 import {
     getAuth, 
     createUserWithEmailAndPassword,
@@ -12,7 +14,6 @@ export const useAuthentication = () => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(null);
 
-    //cleanup
     // deal with memory leak
     const [cancelled, setCancelled] = useState(false);
 
@@ -22,7 +23,7 @@ export const useAuthentication = () => {
        if (cancelled) {
         return;
        }
-    }
+    };
 
     // register
     const createUser = async (data) => {
@@ -37,7 +38,7 @@ export const useAuthentication = () => {
             const {user} = await createUserWithEmailAndPassword(
                 auth, 
                 data.email,
-                data.password
+                data.password,
             );
 
             await updateProfile(user, {
@@ -74,34 +75,31 @@ export const useAuthentication = () => {
     }
 
     // login - sign in
-
-    const login = async (data) => {
+    const login = async(data) => {
         checkIfIsCancelled();
 
         setLoading(true);
         setError(false);
 
        try {
-            await signInWithEmailAndPassword(auth, data.email, data.password);
-            setLoading(false);            
-       } catch(error) {          
-          console.log(error.message);
-          console.log(typeof error.message);
-        
-          let systemErrorMessage;  
+         await signInWithEmailAndPassword(auth, data.email, data.password);
+          
+         console.log(data.email);
+         console.log(data.password);
 
+         setLoading(false);            
+       } catch(error) {          
+          let systemErrorMessage; 
           if (error.message.includes("user-not-found")){
             systemErrorMessage = "Usuário não encontrado."
           } else if (error.message.includes("wrong-password")){
             systemErrorMessage = "Senha incorreta."
           } else {
-            systemErrorMessage = "Ocorreu um erro, por favor tente mais tarde."
+            systemErrorMessage = "Ocorreu um erro, por favor tente mais tarde.";
           }
-
           setError(systemErrorMessage);
+          setLoading(false);
         }
-        
-        setLoading(false);
     };
 
     useEffect(() => {

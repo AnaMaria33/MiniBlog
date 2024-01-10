@@ -21,19 +21,20 @@ const Register = () => {
       displayName,
       email,
       password
-    }
+    };
 
     if (password !== confirmPassword){
-      setError("As senhas precisam ser iguais")
-      return
+      setError("As senhas precisam ser iguais.");
+      return;
     }
-
-    const res = await createUser(user);
     console.log(user);
+    const res = await createUser(user);
+
+    console.log(res);
   };
 
   useEffect(() => {
-    if(authError){
+    if (authError){
       setError(authError);
     }
   }, [authError]);
@@ -50,8 +51,8 @@ const Register = () => {
               name="displayName" 
               required 
               placeholder="Nome do usuário" 
-              value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
+              value={displayName}
               />
           </label>
           <label>
@@ -61,8 +62,8 @@ const Register = () => {
               name="email" 
               required 
               placeholder="E-mail do usuário" 
-              value={email}
               onChange={(e) => setEmail(e.target.value)}
+              value={email}
               />
           </label>
           <label>
@@ -72,8 +73,8 @@ const Register = () => {
               name="password" 
               required 
               placeholder="Insira sua senha" 
-              value={password}
               onChange={(e) => setPassword(e.target.value)}
+              value={password}
               />
           </label>
           <label>
@@ -83,15 +84,21 @@ const Register = () => {
               name="confirmPassword" 
               required 
               placeholder="Confirme a sua senha" 
-              value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
+              value={confirmPassword}
             />
           </label>
-          <button className="btn">Cadastrar</button>
+          {!loading && <button className="btn">Cadastrar</button>}
+          {loading && (
+            <button className="btn" disabled>
+              Aguarde...
+            </button>
+            )}
           {error && <p className="error">{error}</p> }
+          
         </form>
     </div>
-  )
-}
+  );
+};
 
-export default Register
+export default Register;
